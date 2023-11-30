@@ -13,7 +13,7 @@ const noticeModel = MySequelize.define('notice', {
     allowNull: false
   },
   content: {
-    type: Sequelize.STRING(1000),
+    type: Sequelize.STRING(255),
     field:  'content',
     allowNull: false
   },

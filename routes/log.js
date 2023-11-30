@@ -8,7 +8,7 @@ const { checkAuth } = require("../middleware/auth")
 const Permission = require("../middleware/permission")
 
 // 分页查询操作日志
-router.get('/list/:current/:limit', checkAuth, new Permission(['ROLE_QUERY_LOG_LIST']).hasPermission, async (ctx) => {
+router.get('/list/:current/:limit', checkAuth, new Permission(['admin']).hasPermission, async (ctx) => {
   const { rows, count } = await logModel.findAndCountAll({
     attributes: {exclude: ['params', 'result', 'user_id']},
     where: {
@@ -40,7 +40,7 @@ router.get('/list/:current/:limit', checkAuth, new Permission(['ROLE_QUERY_LOG_L
 })
 
 // 删除日志
-router.delete("/:id", checkAuth, new Permission(['ROLE_DELETE_LOG']).hasPermission, async (ctx) => {
+router.delete("/:id", checkAuth, new Permission(['admin']).hasPermission, async (ctx) => {
   const res = await logModel.destroy({
     where: {
       id: ctx.params.id
@@ -62,7 +62,7 @@ router.delete("/:id", checkAuth, new Permission(['ROLE_DELETE_LOG']).hasPermissi
 })
 
 // 根据id查询日志详情
-router.get("/info/:id", checkAuth, new Permission(['ROLE_QUERY_LOG_DETAIL']).hasPermission, async (ctx) => {
+router.get("/info/:id", checkAuth, new Permission(['admin']).hasPermission, async (ctx) => {
   const res = await logModel.findOne({
     where: {
       id: ctx.request.params.id

@@ -7,23 +7,13 @@ const userModel = MySequelize.define('user', {
     field:  'id',
     primaryKey: true
   },
-  number: {
-    type: Sequelize.STRING(19),
-    field:  'number',
-    allowNull: false
-  },
   name: {
     type: Sequelize.STRING(30),
     field:  'name',
     allowNull: false
   },
-  phone: {
-    type: Sequelize.STRING(11),
-    field:  'phone',
-    allowNull: false
-  },
   password: {
-    type: Sequelize.STRING(255),
+    type: Sequelize.STRING(30),
     field:  'password',
     allowNull: false
   },
@@ -37,20 +27,20 @@ const userModel = MySequelize.define('user', {
     field:  'gender',
     allowNull: true
   },
-  birthday: {
-    type: Sequelize.DATE,
-    field:  'birthday',
-    allowNull: true
-  },
   email: {
     type: Sequelize.STRING(50),
     field:  'email',
     allowNull: true
   },
-  avatar: {
+  site_id: {
     type: Sequelize.STRING(19),
-    field:  'avatar',
-    allowNull: true
+    field:  'site_id',
+    allowNull: false
+  },
+  open: {
+    type: Sequelize.TINYINT,
+    field:  'open',
+    allowNull: false
   },
   create_time: {
     type: Sequelize.DATE,
