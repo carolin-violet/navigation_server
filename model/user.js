@@ -32,11 +32,6 @@ const userModel = MySequelize.define('user', {
     field:  'email',
     allowNull: true
   },
-  site_id: {
-    type: Sequelize.STRING(19),
-    field:  'site_id',
-    allowNull: false
-  },
   open: {
     type: Sequelize.TINYINT,
     field:  'open',

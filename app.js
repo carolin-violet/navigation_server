@@ -54,7 +54,7 @@ function useRouter(path){
     } else {
       let module = require(elementPath)
       //routes里的文件名作为 路由名
-      router.use('/laboratory_management_system/' + element.replace('.js', ''), module.routes())
+      router.use('/violet-navigation/' + element.replace('.js', ''), module.routes())
     }
   })
   //使用路由
@@ -66,7 +66,7 @@ async function start () {
   useMiddleware()
   useRouter()
   const host = '127.0.0.1'
-  const port = 9997
+  const port = 9990
   app.listen(port, host)
   consola.ready({
     message: `Server listening on http://${host}:${port}`,

@@ -27,6 +27,11 @@ const navigationModel = MySequelize.define('navigation', {
     field:  'url',
     allowNull: false
   },
+  ladder: {
+    type: Sequelize.TINYINT,
+    field:  'ladder',
+    allowNull: false
+  },
   create_time: {
     type: Sequelize.DATE,
     field:  'create_time',
