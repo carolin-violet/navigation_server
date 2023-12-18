@@ -34,12 +34,12 @@ router.get('/list/:current/:limit', checkAuth, new Log('导航模块', '分页�
 })
 
 // 添加导航
-router.post('/:cat_id', checkAuth, new Log('导航模块', '添加导航').setLog, async (ctx) => {
+router.post('/', checkAuth, new Log('导航模块', '添加导航').setLog, async (ctx) => {
   const navigation = ctx.request.body
   const res = await navigationModel.findOne({
     where: {
       name: navigation.name,
-      cat_id: ctx.params.cat_id
+      cat_id: navigation.cat_id
     }
   })
   if (res) {
@@ -53,7 +53,7 @@ router.post('/:cat_id', checkAuth, new Log('导航模块', '添加导航').setLo
 
     const res = await navigationModel.create({
       id: genid.NextId().toString(),
-      cat_id: ctx.cat_id,
+      cat_id: navigation.cat_id,
       name: navigation.name,
       description: navigation.description,
       url: navigation.url,

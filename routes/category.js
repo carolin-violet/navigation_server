@@ -1,5 +1,5 @@
 const fs = require('fs')
-let path = require('path')
+const stream = require('stream')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -10,12 +10,12 @@ const { checkAuth } = require("../middleware/auth")
 const Log = require("../middleware/log")
 
 // 查询每一级的分类
-router.get('/list/:category_id',  checkAuth, new Log('分类模块', '查询每一级分类').setLog, async (ctx) => {
-  const { rows, count } = await categoryModel.findAndCountAll({
-    attributes: { exclude: ['user_id'] },
+router.get('/list',  checkAuth, new Log('分类模块', '查询每一级分类').setLog, async (ctx) => {
+  console.log(ctx.user_id, ctx.query.parent_id)
+  const categoryList = await categoryModel.findAll({
     where: {
       user_id: ctx.user_id,
-      category_id: ctx.params.category_id
+      parent_id: ctx.query.parent_id
     },
     raw: true
   })
@@ -23,16 +23,12 @@ router.get('/list/:category_id',  checkAuth, new Log('分类模块', '查询每�
     code: 20000,
     message: '查询成功',
     success: true,
-    data: {
-      rows,
-      count
-    }
+    data: categoryList
   }
 })
 
 // 添加分类
-router.post('/:parent_id', checkAuth, new Log('分类模块', '添加分类').setLog, async (ctx) => {
-  console.log('xxx')
+router.post('/', checkAuth, new Log('分类模块', '添加分类').setLog, async (ctx) => {
   const category = ctx.request.body
   const res = await categoryModel.findOne({
     where: {
@@ -60,7 +56,8 @@ router.post('/:parent_id', checkAuth, new Log('分类模块', '添加分类').se
       ctx.response.body = {
         code: 20000,
         message: '添加成功',
-        success: true
+        success: true,
+        data: res
       }
     } else {
       ctx.response.body = {
@@ -131,12 +128,46 @@ router.put('/:id', checkAuth, new Log('分类模块', '修改分类信息').setL
 })
 
 // 导入（分类及对应导航）（未完成）
-router.post('/import/all',  checkAuth, new Log('分类模块', '导出分类').setLog, async (ctx) => {
+router.post('/import',  checkAuth, new Log('分类模块', '导出分类').setLog, async (ctx) => {
   const { file } = ctx.request.files
   try {
     const data = fs.readFileSync(file.filepath,'utf-8')
     const obj = JSON.parse(data)
-    // 接下来需要将解析出来的数据导入到数据库中
+
+    const categoryList = obj.data
+
+    for (const category of categoryList) {
+      await categoryModel.create({
+        id: category.id,
+        user_id: category.user_id,
+        category_name: category.category_name,
+        parent_id: category.parent_id,
+        create_time: category.create_time,
+      })
+
+      for (const subCategory of category.children) {
+        await categoryModel.create({
+          id: subCategory.id,
+          user_id: subCategory.user_id,
+          category_name: subCategory.category_name,
+          parent_id: subCategory.parent_id,
+          create_time: subCategory.create_time,
+        })
+
+        for (const nav of subCategory.navigation) {
+          await navigationModel.create({
+            id: nav.id,
+            cat_id: nav.cat_id,
+            name: nav.name,
+            description: nav.description,
+            url: nav.url,
+            ladder: nav.ladder,
+            create_time: nav.create_time,
+          })
+        }
+      }
+    }
+
     ctx.response.body = {
       code: 20000,
       message: '导入成功',
@@ -151,24 +182,48 @@ router.post('/import/all',  checkAuth, new Log('分类模块', '导出分类').s
   }
 })
 
-// 导出所有数据（未作）
+// 导出所有数据
 router.get('/export',  checkAuth, new Log('分类模块', '导出分类').setLog, async (ctx) => {
-  const { rows, count } = await categoryModel.findAndCountAll({
-    attributes: { exclude: ['user_id'] },
+  // 先查询一级分类
+  const categoryList = await categoryModel.findAll({
     where: {
       user_id: ctx.user_id,
-      category_id: ctx.params.category_id
+      parent_id: -1
     },
     raw: true
   })
-  ctx.response.body = {
-    code: 20000,
-    message: '查询成功',
-    success: true,
-    data: {
-      rows,
-      count
+
+  // 遍历一级分类查询二级分类并将相应导航添加到二级分类对应的属性中
+  for (const category of categoryList) {
+    const subCategoryList = await categoryModel.findAll({
+      where: {
+        user_id: ctx.user_id,
+        parent_id: category.id
+      },
+      raw: true
+    })
+    for (const subCategory of subCategoryList) {
+      const navList = await navigationModel.findAll({
+        where: {
+          cat_id: subCategory.id
+        }
+      })
+      subCategory.navigation = navList
     }
+
+    category.children = subCategoryList
   }
+
+  const exportData = JSON.stringify({ data: categoryList }, null, 2)
+
+  // 用数据生成json文件
+  const readable = stream.Readable
+  const s = new readable()
+  // 将json传入到流中
+  s.push(exportData)
+  // 结束流
+  s.push(null)
+
+  ctx.response.body = s
 })
 module.exports = router
