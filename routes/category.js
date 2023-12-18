@@ -127,7 +127,7 @@ router.put('/:id', checkAuth, new Log('分类模块', '修改分类信息').setL
   }
 })
 
-// 导入（分类及对应导航）（未完成）
+// 导入（分类及对应导航）
 router.post('/import',  checkAuth, new Log('分类模块', '导出分类').setLog, async (ctx) => {
   const { file } = ctx.request.files
   try {
