@@ -3,15 +3,15 @@
 
  Source Server         : mysql
  Source Server Type    : MySQL
- Source Server Version : 80200
+ Source Server Version : 80025
  Source Host           : localhost:3306
  Source Schema         : navigation
 
  Target Server Type    : MySQL
- Target Server Version : 80200
+ Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 18/12/2023 20:42:57
+ Date: 25/12/2023 14:15:26
 */
 
 SET NAMES utf8mb4;
@@ -134,7 +134,7 @@ CREATE TABLE `notice`  (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` varchar(19) CHARACTER SET utf32 COLLATE utf32_general_ci NOT NULL,
-  `name` varchar(30) CHARACTER SET utf32 COLLATE utf32_general_ci NOT NULL,
+  `username` varchar(30) CHARACTER SET utf32 COLLATE utf32_general_ci NOT NULL,
   `password` varchar(30) CHARACTER SET utf32 COLLATE utf32_general_ci NOT NULL,
   `role` varchar(20) CHARACTER SET utf32 COLLATE utf32_general_ci NOT NULL,
   `gender` tinyint(0) NOT NULL,
