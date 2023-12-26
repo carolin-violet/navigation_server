@@ -15,7 +15,6 @@ router.get(
   checkAuth,
   new Log("分类模块", "查询每一级分类").setLog,
   async (ctx) => {
-    console.log(ctx.user_id, ctx.query.parent_id);
     const categoryList = await categoryModel.findAll({
       where: {
         user_id: ctx.user_id,
