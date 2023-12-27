@@ -40,7 +40,7 @@ router.post(
     const category = ctx.request.body;
     const res = await categoryModel.findOne({
       where: {
-        category_name: category.category_name,
+        name: category.name,
         user_id: ctx.user_id,
       },
     });
@@ -56,7 +56,7 @@ router.post(
       const res = await categoryModel.create({
         id: genid.NextId().toString(),
         user_id: ctx.user_id,
-        category_name: category.category_name,
+        name: category.name,
         parent_id: category.parent_id,
         create_time: new Date(),
       });
@@ -163,7 +163,7 @@ router.post(
         await categoryModel.create({
           id: category.id,
           user_id: category.user_id,
-          category_name: category.category_name,
+          name: category.name,
           parent_id: category.parent_id,
           create_time: category.create_time,
         });
@@ -172,7 +172,7 @@ router.post(
           await categoryModel.create({
             id: subCategory.id,
             user_id: subCategory.user_id,
-            category_name: subCategory.category_name,
+            name: subCategory.name,
             parent_id: subCategory.parent_id,
             create_time: subCategory.create_time,
           });
