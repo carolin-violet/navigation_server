@@ -16,7 +16,7 @@ const categoryModel = MySequelize.define(
     },
     name: {
       // 类别名称
-      type: Sequelize.STRING(15),
+      type: Sequelize.STRING(32),
       field: "name",
       allowNull: false,
     },

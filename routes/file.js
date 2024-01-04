@@ -18,9 +18,7 @@ router.post(
     try {
       const data = fs.readFileSync(file.filepath, "utf-8");
       const obj = JSON.parse(data);
-
       const categoryList = obj.data;
-
       for (const category of categoryList) {
         await categoryModel.create({
           id: category.id,
@@ -63,6 +61,7 @@ router.post(
         code: 20001,
         message: "导入失败",
         success: false,
+        extra: err,
       };
     }
   }
