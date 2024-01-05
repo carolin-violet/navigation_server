@@ -81,7 +81,6 @@ router.get(
       },
       raw: true,
     });
-
     // 遍历一级分类查询二级分类并将相应导航添加到二级分类对应的属性中
     for (const category of categoryList) {
       const subCategoryList = await categoryModel.findAll({
@@ -103,17 +102,22 @@ router.get(
       category.children = subCategoryList;
     }
 
-    const exportData = JSON.stringify({ data: categoryList }, null, 2);
+    // const exportData = JSON.stringify({ data: categoryList }, null, 2);
 
-    // 用数据生成json文件
-    const readable = stream.Readable;
-    const s = new readable();
-    // 将json传入到流中
-    s.push(exportData);
-    // 结束流
-    s.push(null);
+    // // 用数据生成json文件
+    // const readable = stream.Readable;
+    // const s = new readable();
+    // // 将json传入到流中
+    // s.push(exportData);
+    // // 结束流
+    // s.push(null);
 
-    ctx.response.body = s;
+    ctx.response.body = {
+      code: 20000,
+      message: "导出成功",
+      success: true,
+      data: categoryList,
+    };
   }
 );
 

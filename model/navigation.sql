@@ -448,6 +448,6 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('0000000000000000000', 'admin', 'zj20001125', 'admin', 1, '2976008778@qq.com', 0, '2023-11-30 21:14:36');
+INSERT INTO `user` VALUES ('0000', 'admin', 'zj20001125', 'admin', 1, '2976008778@qq.com', 0, '2023-11-30 21:14:36');
 
 SET FOREIGN_KEY_CHECKS = 1;
