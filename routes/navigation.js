@@ -14,12 +14,15 @@ router.get(
   checkAuth,
   new Log("导航模块", "分页查询导航列表信息").setLog,
   async (ctx) => {
-    const { pageNum, pageSize, name } = ctx.request.query;
+    const { pageNum, pageSize, name, cat_id } = ctx.request.query;
     const { rows, count } = await navigationModel.findAndCountAll({
       attributes: { exclude: ["password"] },
       where: {
         name: {
           [Op.like]: `%${name}%`,
+        },
+        cat_id: {
+          [Op.like]: `%${cat_id}%`,
         },
       },
       offset: (parseInt(pageNum) - 1) * parseInt(pageSize),
@@ -98,6 +101,7 @@ router.delete(
         id: ctx.params.id,
       },
     });
+    console.log('xxx', res)
     if (res) {
       ctx.response.body = {
         code: 20000,
